@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 
@@ -17,7 +18,22 @@ export default function Index() {
     date: '',
     comment: ''
   });
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { toast } = useToast();
+
+  const scrollToSection = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    setMobileMenuOpen(false);
+  };
+
+  const menuItems = [
+    { label: 'Главная', id: 'hero' },
+    { label: 'Услуги', id: 'services' },
+    { label: 'Портфолио', id: 'portfolio' },
+    { label: 'Отзывы', id: 'reviews' },
+    { label: 'Запись', id: 'booking' },
+    { label: 'Контакты', id: 'contacts' }
+  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,7 +92,45 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-accent via-background to-secondary">
-      <section id="hero" className="relative overflow-hidden py-20 px-4">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
+        <div className="container mx-auto max-w-6xl px-4 py-4 flex items-center justify-between">
+          <div className="text-2xl font-serif font-bold text-primary">Салон Красоты</div>
+          
+          <div className="hidden md:flex items-center gap-8">
+            {menuItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className="text-foreground hover:text-primary transition-colors duration-200 font-medium"
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild className="md:hidden">
+              <Button variant="ghost" size="icon">
+                <Icon name="Menu" size={24} />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-72 bg-background/95 backdrop-blur-lg">
+              <div className="flex flex-col gap-6 mt-12">
+                {menuItems.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => scrollToSection(item.id)}
+                    className="text-left text-xl font-medium text-foreground hover:text-primary transition-colors duration-200"
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </nav>
+      <section id="hero" className="relative overflow-hidden pt-32 pb-20 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center animate-fade-in">
             <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-6 font-serif">
